@@ -8,25 +8,54 @@ function TextEntryList(props) {
   const [sortDirection, setSortDirection] = useState(1); // props.defaultSortMode
 
 
-
-const onTextSubmited = (userSubmittedText) => {
-    
-    /* Upon submission, the User inputs should be appended to a central store as strings, one entry per submission. This should trigger an
-    Update to the UI that shows a list of the User inputs in the store, below the form fields. The list should display the User inputs in the order
-    in which they were entered (first input = first list item). */
-    if (userSubmittedText.length > 0) {   
+  const addUserInput = (userSubmittedText) => {
       
-      setUserInputs(userInputs => {
-        return [...userInputs, {text: userSubmittedText, time: Date.now()}];
+      /* Upon submission, the User inputs should be appended to a central store as strings, one entry per submission. This should trigger an
+      Update to the UI that shows a list of the User inputs in the store, below the form fields. The list should display the User inputs in the order
+      in which they were entered (first input = first list item). */
+      if (userSubmittedText.length > 0) {   
+        
+        setUserInputs(userInputs => {
+          return [...userInputs, {text: userSubmittedText, time: Date.now()}];
+        });
+
+        console.log(userInputs);
+      }
+  }
+
+  const sortAlphabetical = () => {
+    /* The first is a button that allows the User to toggle between showing the list in ascending
+    or descending alphabetical order. */
+    
+    setUserInputs((userInputs) => {
+      const userInputsClone = [...userInputs];
+
+      // sort alphabetical
+      userInputsClone.sort(function(a, b) {
+        var textA = a.text.toUpperCase(); // ignore upper and lowercase
+        var textB = b.text.toUpperCase(); // ignore upper and lowercase
+        if (textA < textB) {
+          return -1 * sortDirection;
+        }
+        if (textA > textB) {
+          return 1 * sortDirection;
+        }
+
+        // must be equal
+        return 0;
       });
 
-      console.log(userInputs);
-    }
-}
+      return userInputsClone;
+
+    });
+
+    setSortDirection(sortDirection => sortDirection * -1);
+
+    console.log(userInputs);    
+  }
 
 
 const sortByTimeStamp = () => {
-
   /* The second button should allow the User to reset the list back to the order in which
   the inputs were originally entered. */
 
@@ -41,15 +70,19 @@ const sortByTimeStamp = () => {
 
 
 
+
+
  return (
   
     <div className="textEntryList">  
       {/* Initially present the User with one <input type="text"/> element and one <input type="submit"/> element.
       Users will enter some text (anything type-able in an input box) and click the submit button to submit. */}
       
-      <TextFieldSubmit submitCallback={onTextSubmited} /> 
+      <TextFieldSubmit submitCallback={addUserInput} /> 
 
- 
+      <input type="button" className="sortingButton" 
+      value={sortDirection > 0 ? "Sort Ascending" : "Sort Descending" } 
+      onClick={sortAlphabetical} /> 
      
       <input type="button" className="sortingButton" 
       value="Timestamp" 
