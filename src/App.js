@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import TextEntryList from './TextEntryList';
 import { useDispatch, useSelector } from 'react-redux'; 
 import * as textEntryActions from './redux/actions/textEntry';

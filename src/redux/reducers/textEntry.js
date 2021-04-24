@@ -1,4 +1,4 @@
-export default function(listState = getInitialState(), action) {
+export default function textEntryReducer(listState = getInitialState(), action) {
 	
 	switch(action.type) {
 
