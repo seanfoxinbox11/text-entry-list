@@ -25,6 +25,22 @@ const onTextSubmited = (userSubmittedText) => {
 }
 
 
+const sortByTimeStamp = () => {
+
+  /* The second button should allow the User to reset the list back to the order in which
+  the inputs were originally entered. */
+
+  setUserInputs(userInputs => {
+    const userInputsClone = [...userInputs];
+    userInputsClone.sort((a, b) => a.time - b.time); 
+    return userInputsClone;
+  });
+
+  console.log(userInputs);
+}
+
+
+
  return (
   
     <div className="textEntryList">  
@@ -34,7 +50,10 @@ const onTextSubmited = (userSubmittedText) => {
       <TextFieldSubmit submitCallback={onTextSubmited} /> 
 
  
- 
+     
+      <input type="button" className="sortingButton" 
+      value="Timestamp" 
+      onClick={sortByTimeStamp} /> 
  
       {userInputs.length > 0 ? /* The list should not display until there is at least one User input. */
         <ul className="list">
