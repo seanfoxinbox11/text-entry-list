@@ -1,75 +1,65 @@
-import { useState } from 'react';
 import './App.css';
+import { useState, useMemo } from 'react';
 import TextFieldSubmit from './TextFieldSubmit'; 
 
 function TextEntryList(props) {
 
-  const [userInputs, setUserInputs] = useState([]);
-  const [sortDirection, setSortDirection] = useState(1); // props.defaultSortMode
-
+  const [sortDirection, setSortDirection] = useState(props.defaultSortMode); 
+  const [sortByTimestamp, setSortByTimestamp] = useState(true); 
 
   const addUserInput = (userSubmittedText) => {
       
-      /* Upon submission, the User inputs should be appended to a central store as strings, one entry per submission. This should trigger an
-      Update to the UI that shows a list of the User inputs in the store, below the form fields. The list should display the User inputs in the order
-      in which they were entered (first input = first list item). */
       if (userSubmittedText.length > 0) {   
-        
-        setUserInputs(userInputs => {
-          return [...userInputs, {text: userSubmittedText, time: Date.now()}];
-        });
-
-        console.log(userInputs);
+        props.listItemAddedCallback({text: userSubmittedText});
       }
   }
 
-  const sortAlphabetical = () => {
-    /* The first is a button that allows the User to toggle between showing the list in ascending
-    or descending alphabetical order. */
+
+  const sortedItems = useMemo(() => {
     
-    setUserInputs((userInputs) => {
-      const userInputsClone = [...userInputs];
+    if (sortByTimestamp) {
+      
+      /* The second button should allow the User to reset the list back to the order in which
+      the inputs were originally entered. */
 
-      // sort alphabetical
-      userInputsClone.sort(function(a, b) {
-        var textA = a.text.toUpperCase(); // ignore upper and lowercase
-        var textB = b.text.toUpperCase(); // ignore upper and lowercase
-        if (textA < textB) {
-          return -1 * sortDirection;
-        }
-        if (textA > textB) {
-          return 1 * sortDirection;
-        }
+      return props.listItems
+    }
+    else {
 
-        // must be equal
-        return 0;
-      });
+        /* The first is a button that allows the User to toggle between showing the list in ascending
+        or descending alphabetical order. */
+      
+        const listItemsClone = [...props.listItems];
+        
+        // sort alphabetical
+        listItemsClone.sort(function(a, b) {
+          var textA = a.text.toUpperCase(); // ignore upper and lowercase
+          var textB = b.text.toUpperCase(); // ignore upper and lowercase
+          if (textA < textB) {
+            return 1 * sortDirection;
+          }
+          if (textA > textB) {
+            return -1 * sortDirection;
+          }
 
-      return userInputsClone;
+          // must be equal
+          return 0;
+        });   
 
-    });
+        return listItemsClone;
+    }  
+  }, [sortDirection, sortByTimestamp, props.listItems]);
 
+
+  const sortAlphabetical = () => {
+    setSortByTimestamp(sortByTimestamp => false);
+    
     setSortDirection(sortDirection => sortDirection * -1);
-
-    console.log(userInputs);    
   }
 
-
-const sortByTimeStamp = () => {
-  /* The second button should allow the User to reset the list back to the order in which
-  the inputs were originally entered. */
-
-  setUserInputs(userInputs => {
-    const userInputsClone = [...userInputs];
-    userInputsClone.sort((a, b) => a.time - b.time); 
-    return userInputsClone;
-  });
-
-  console.log(userInputs);
-}
-
-
-
+  const sortTimeStamp = () => {
+    setSortByTimestamp(sortByTimestamp => !sortByTimestamp);
+  }
 
 
  return (
@@ -86,11 +76,11 @@ const sortByTimeStamp = () => {
      
       <input type="button" className="sortingButton" 
       value="Timestamp" 
-      onClick={sortByTimeStamp} /> 
+      onClick={sortTimeStamp} /> 
  
-      {userInputs.length > 0 ? /* The list should not display until there is at least one User input. */
+      {sortedItems.length > 0 ? /* The list should not display until there is at least one User input. */
         <ul className="list">
-          {userInputs.map((userInput, index) => {
+          {sortedItems.map((userInput, index) => {
             return <li key={index}>{userInput.text}</li>
           })}
         </ul> 	

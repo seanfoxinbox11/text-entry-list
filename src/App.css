@@ -3,13 +3,17 @@ body {
 }
 
 .textEntryList {
-  margin: 40px 40px;
+  margin: 20px 40px;
   width: 600px;
 }
 
 .sortingButton {
   width: 120px;
   margin: 10px;
+}
+
+.dropdown {
+  margin: 40px 0px 0px 40px;
 }
 
 
